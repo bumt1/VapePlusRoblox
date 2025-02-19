@@ -66,7 +66,7 @@ end
 local profiles = {
 	"default6872274481.txt", 
 	"gui.txt", 
-	"whitelist.json" -- Adjust filenames
+	"whitelist.json"
 }
 
 for _, profile in ipairs(profiles) do
