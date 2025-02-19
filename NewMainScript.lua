@@ -47,13 +47,36 @@ if not shared.VapeDeveloper then
 	local commit = subbed:find('currentOid')
 	commit = commit and subbed:sub(commit + 13, commit + 52) or nil
 	commit = commit and #commit == 40 and commit or 'main'
-	if commit == 'main' or (isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or '') ~= commit then
+	
+	local oldCommit = isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or ''
+	
+	if commit == 'main' or oldCommit ~= commit then
+		-- Wipe old files and update everything
 		wipeFolder('newvape')
 		wipeFolder('newvape/games')
 		wipeFolder('newvape/guis')
 		wipeFolder('newvape/libraries')
+		wipeFolder('newvape/profiles') -- Ensure profiles are also wiped
+
+		writefile('newvape/profiles/commit.txt', commit)
 	end
-	writefile('newvape/profiles/commit.txt', commit)
 end
 
-return loadstring(downloadFile('newvape/main.lua'), 'main')()
+-- Download default profiles if they don't exist
+local profiles = {
+	"default6872274481.txt", 
+	"gui.txt", 
+	"whitelist.json" -- Adjust filenames
+}
+
+for _, profile in ipairs(profiles) do
+	downloadFile("newvape/profiles/" .. profile)
+end
+
+-- Ensure the main script is executed
+local mainScriptPath = "newvape/main.lua"
+if not isfile(mainScriptPath) then
+	downloadFile(mainScriptPath)
+end
+
+return loadstring(readfile(mainScriptPath), "main.lua")()
