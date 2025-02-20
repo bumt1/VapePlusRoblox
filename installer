@@ -54,3 +54,12 @@ for _, fileData in ipairs(files) do
     end
     downloadFile(url, path)
 end
+
+-- Send notification when installation is complete
+pcall(function()
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Installation Complete",
+        Text = "Files have been successfully downloaded!",
+        Duration = 5
+    })
+end)
